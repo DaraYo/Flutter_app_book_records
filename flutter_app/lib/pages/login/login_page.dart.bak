@@ -15,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
-  bool _autoValidate = true;
+  bool _autoValidate = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   _confirmLogin(BuildContext context) {
+    final FormState form = _formKey.currentState;
     if (_formKey.currentState.validate()) {
       final loginCubit = context.bloc<LoginPageCubit>();
       print(_emailController.text);
@@ -156,9 +157,9 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: new AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(
-          color: Colors.blueGrey,
-        ),
+        // iconTheme: IconThemeData(
+        //   color: Colors.blueGrey,
+        // ),
       ),
       extendBodyBehindAppBar: true,
       body: BlocProvider(
@@ -190,7 +191,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (message != null) {
       _showToast(context, message);
     }
-    return Stack(
+    return
+        // AnnotatedRegion<SystemUiOverlayStyle>(
+        //   value: SystemUiOverlayStyle.light,
+        //   child: GestureDetector(
+        //     onTap: () => FocusScope.of(context).unfocus(),
+        //     child:
+        Stack(
       children: <Widget>[
         Container(
           height: double.infinity,

@@ -24,7 +24,6 @@ class UserService {
     // );
     var response = await _helper.post(
         "/api/token-auth/", jsonEncode(userCredentials.toMap()));
-    print("ovo je response");
     UserDto userDto = UserDto();
     return userDto.fromMap(response);
   }

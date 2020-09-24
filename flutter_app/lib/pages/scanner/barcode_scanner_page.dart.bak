@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/common/color_constants.dart';
 import 'package:flutter_app/common/constants.dart';
 import 'package:flutter_app/database/database_provider.dart';
+import 'package:flutter_app/database/session/session_repository.dart';
 import 'package:flutter_app/database/session/session_repository_imp.dart';
 import 'package:flutter_app/models/book.dart';
 import 'package:flutter_app/models/scan_session.dart';
@@ -35,7 +36,6 @@ class BarcodeScannerPage extends StatefulWidget {
 }
 
 class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
-  FToast fToast;
   static GlobalKey previewContainer = new GlobalKey();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -43,12 +43,6 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
   final Color _scannerBorderCodeFoundColor = Colors.green;
   bool _autoValidate = false;
   bool _loading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    fToast = FToast(context);
-  }
 
   PersistentBottomSheetController _sheetController;
 
@@ -65,53 +59,59 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
               listener: (context, state) {
                 print("listener");
                 if (state is BarcodeScannerEanCodeFound) {
-                  // showAwesomeDialog(context, state.book);
-                  _showToastCancel(state.book);
+                  showAwesomeDialog(context, state.book);
                 } else if (state is BarcodeScannerMessage) {
-                  // AwesomeDialog(
-                  //   context: context,
-                  //   width: 280,
-                  //   headerAnimationLoop: false,
-                  //   animType: AnimType.BOTTOMSLIDE,
-                  //   title: 'INFO',
-                  //   desc: state.message,
-                  //   btnOkOnPress: () {
-                  //     final scannerCubit = context.bloc<BarcodeScannerCubit>();
-                  //     scannerCubit.messageRead();
-                  //   },
-                  // )..show();
-                  _showToast(context, state.message);
+                  AwesomeDialog(
+                    context: context,
+                    width: 280,
+                    headerAnimationLoop: false,
+                    animType: AnimType.BOTTOMSLIDE,
+                    title: 'INFO',
+                    desc: state.message,
+                    btnOkOnPress: () {
+                      final scannerCubit = context.bloc<BarcodeScannerCubit>();
+                      scannerCubit.messageRead();
+                    },
+                  )..show();
                 }
               },
               builder: (context, state) {
                 if (state is BarcodeScannerCode128Found) {
                   return buildScannerContainer(
-                      context, _scannerBorderCodeFoundColor, state.session);
+                      context,
+                      _scannerBorderCodeFoundColor,
+                      state.session,
+                      null,
+                      false,
+                      null);
                 } else if (state is BarcodeScannerScanning) {
                   return buildScannerContainer(
-                      context, _scannerBorderDefaultColor, state.session);
-                }
-                // else if (state is BarcodeScannerMessage) {
-                //   return buildScannerContainer(
-                //       context,
-                //       _scannerBorderDefaultColor,
-                //       state.session,
-                //       null,
-                //       false,
-                //       null);
-                // } else if (state is BarcodeScannerEanCodeFound) {
-                //   return buildScannerContainer(
-                //       context,
-                //       _scannerBorderCodeFoundColor,
-                //       state.session,
-                //       null,
-                //       true,
-                //       state.book);
-
-                // Future<Uint8List> image = takeScreenShot();
-                // takeScreenShot().then((value) => image = value);
-                // return buildScannerWithDialog(context, state.book, image);
-                //return _showDialog(context, state.book);
+                      context,
+                      _scannerBorderDefaultColor,
+                      state.session,
+                      null,
+                      false,
+                      null);
+                } else if (state is BarcodeScannerMessage) {
+                  return buildScannerContainer(
+                      context,
+                      _scannerBorderDefaultColor,
+                      state.session,
+                      null,
+                      false,
+                      null);
+                } else if (state is BarcodeScannerEanCodeFound) {
+                  return buildScannerContainer(
+                      context,
+                      _scannerBorderCodeFoundColor,
+                      state.session,
+                      null,
+                      true,
+                      state.book);
+                  // Future<Uint8List> image = takeScreenShot();
+                  // takeScreenShot().then((value) => image = value);
+                  // return buildScannerWithDialog(context, state.book, image);
+                  //return _showDialog(context, state.book);
 //                } else if (state is BarcodeScannerMessage) {
 //                  return buildScannerContainer(
 //                      context,
@@ -120,16 +120,15 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
 //                      state.message,
 //                      false,
 //                      null);
-                // }
-                else {
-                  return buildSessionFormPage(context);
+                } else {
+                  return buildSessionDialog(context);
                 }
               },
             )));
   }
 
-  Widget buildScannerContainer(
-      BuildContext context, Color borderColor, Session scanSession) {
+  Widget buildScannerContainer(BuildContext context, Color borderColor,
+      Session scanSession, String message, bool showDialog, book) {
     var scanFormats = [BarcodeFormats.CODE_128];
     if (StorageUtil.getBool("ean13") ?? false) {
       scanFormats.add(BarcodeFormats.EAN_13);
@@ -143,10 +142,10 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
         Vibration.vibrate();
       }
     }
-    // print("moja poruka $message");
-    // if (message != null) {
-    //   _showToast(context, message);
-    // }
+    print("moja poruka $message");
+    if (message != null) {
+      _showToast(context, message);
+    }
     return RepaintBoundary(
       key: previewContainer,
       child: Stack(
@@ -175,6 +174,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             body: Container(
               height: MediaQuery.of(context).size.height * 1,
               child: QrCamera(
+                // notStartedBuilder: (context) => loading(),
                 fit: BoxFit.cover,
                 qrCodeCallback: (code) {
                   final scannerCubit = context.bloc<BarcodeScannerCubit>();
@@ -250,19 +250,27 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                   )),
             ),
           ),
+          // if (showDialog)
+          //   CustomDialog(
+          //     title: "Success",
+          //     description:
+          //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          //     buttonText: "Okay",
+          //   ),
         ],
       ),
     );
   }
 
   createSession(BuildContext context) {
+    final FormState form = _formKey.currentState;
     if (_formKey.currentState.validate()) {
       final scannerCubit = context.bloc<BarcodeScannerCubit>();
       scannerCubit.createSession(_sessionNameController.text);
     }
   }
 
-  Widget buildSessionFormPage(BuildContext context) {
+  Widget buildSessionDialog(BuildContext context) {
     return Container(
         color: Colors.white,
         padding: new EdgeInsets.only(top: 50.0, right: 20.0, left: 20.0),
@@ -287,7 +295,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
-            _buildSessionNameField(),
+            _buildEmailTF(),
             SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -316,141 +324,6 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
         backgroundColor: Colors.blueGrey[600],
         textColor: Colors.white,
         fontSize: 18.0);
-  }
-
-  void _showToastCancel(Book book) {
-    Widget toastWithButton = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: ColorConstants.color2,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            Text(
-              book.title,
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              book.author1,
-              style: TextStyle(color: ColorConstants.color2),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "Jezik",
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Text(
-                        book.language,
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey[600],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "Objavljena",
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Text(
-                        book.publishedDate,
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey[600],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "Broj stranica",
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Text(
-                        book.pageCount.toString(),
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey[600],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      //  Row(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     Expanded(
-      //       child: Text(
-      //         text,
-      //         softWrap: true,
-      //         style: TextStyle(
-      //           color: Colors.white,
-      //         ),
-      //       ),
-      //     ),
-      //     IconButton(
-      //       icon: Icon(
-      //         Icons.close,
-      //       ),
-      //       color: Colors.white,
-      //       onPressed: () {
-      //         fToast.removeCustomToast();
-      //       },
-      //     )
-      //   ],
-      // ),
-    );
-    fToast.showToast(
-      child: toastWithButton,
-      gravity: ToastGravity.TOP,
-      toastDuration: Duration(seconds: 1),
-    );
   }
 
   Widget _showDialog(BuildContext context, Book book) {
@@ -629,7 +502,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       return null;
   }
 
-  Widget _buildSessionNameField() {
+  Widget _buildEmailTF() {
     return Form(
       key: _formKey,
       autovalidate: _autoValidate,

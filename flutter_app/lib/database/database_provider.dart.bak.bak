@@ -116,6 +116,12 @@ class DBProvider {
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
 
+  // Future<int> specificDelete(
+  //     String table, String whereExpression, List<String> expressionArgs) async {
+  //   Database db = await instance.database;
+  //   return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  // }
+
   Future<int> sessionCodeDelete(String table, String columnSessionId,
       String columnCode, int sessionId, String code) async {
     Database db = await instance.database;

@@ -13,57 +13,56 @@ class BarcodeScannerInitial extends BarcodeScannerState {
 
 class BarcodeScannerScanning extends BarcodeScannerState {
   final Session session;
-  final bool ean13;
-  BarcodeScannerScanning(this.session, this.ean13);
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [session, ean13];
-}
-
-class BarcodeScannerScanOptionChange extends BarcodeScannerState {
-  BarcodeScannerScanOptionChange();
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class BarcodeScannerCodeFound extends BarcodeScannerState {
-  BarcodeScannerCodeFound();
-
-  @override
-  // TODO: implement props
-  List<Object> get props => [];
-}
-
-class BarcodeScannerCode128Found extends BarcodeScannerState {
-  final Session session;
-  const BarcodeScannerCode128Found(this.session);
+  BarcodeScannerScanning(this.session);
 
   @override
   // TODO: implement props
   List<Object> get props => [session];
 }
 
-class BarcodeScannerEanCodeFound extends BarcodeScannerState {
+// class BarcodeScannerScanOptionChange extends BarcodeScannerState {
+//   BarcodeScannerScanOptionChange();
+
+//   @override
+//   // TODO: implement props
+//   List<Object> get props => [];
+// }
+
+// class BarcodeScannerCodeFound extends BarcodeScannerState {
+//   BarcodeScannerCodeFound();
+
+//   @override
+//   // TODO: implement props
+//   List<Object> get props => [];
+// }
+
+class BarcodeScannerCode128Found extends BarcodeScannerState {
+  //extends BarcodeScannerScanning {
+  final Session session;
+  BarcodeScannerCode128Found(this.session); // : super(session);
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [session];
+}
+
+class BarcodeScannerEanCodeFound extends BarcodeScannerScanning {
   final Book book;
   final Session session;
-  const BarcodeScannerEanCodeFound(this.session, this.book);
+  BarcodeScannerEanCodeFound(this.session, this.book) : super(session);
 
   @override
   // TODO: implement props
   List<Object> get props => [book];
 }
 
-class BarcodeScannerMessage extends BarcodeScannerState {
+class BarcodeScannerMessage extends BarcodeScannerScanning {
   final String message;
   final Session session;
-  final bool ean13;
 
-  BarcodeScannerMessage(this.session, this.ean13, this.message);
+  BarcodeScannerMessage(this.session, this.message) : super(session);
 
   @override
   // TODO: implement props
-  List<Object> get props => [session, ean13, message];
+  List<Object> get props => [session, message];
 }

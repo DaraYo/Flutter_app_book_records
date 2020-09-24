@@ -39,6 +39,7 @@ dependencies:
   flutter_launcher_icons: ^0.7.5
   vibration: ^1.4.0
   flutter_beep: ^0.2.0
+  splashscreen:
 
 
   # The following adds the Cupertino Icons font to your application.

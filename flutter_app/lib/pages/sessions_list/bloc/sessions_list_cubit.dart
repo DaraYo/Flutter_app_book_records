@@ -36,7 +36,10 @@ class SessionsListCubit extends Cubit<SessionsListState> {
       _sessions = await _sessionRepository.getAll();
       emit(SessionsListLoaded(_sessions));
     } catch (ex) {
-      emit(SessionsListError("This is error message"));
+      emit(SessionsListError("Greška prilikom pribavljanja podataka"));
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        emit(SessionsListLoaded(_sessions));
+      });
     }
   }
 
@@ -54,7 +57,10 @@ class SessionsListCubit extends Cubit<SessionsListState> {
         _getSessions();
       }
     } on UnauthorisedException catch (ex) {
-      print(ex);
+      emit(SessionsListError("This is error message"));
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        emit(SessionsListLoaded(_sessions));
+      });
     }
   }
 

@@ -35,8 +35,15 @@ class DBProvider {
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     await db.execute(SessionDao().createTableQuery);
+    await db.execute(SessionDao().insertFakeData);
+    await db.execute(SessionDao().insertFakeData2);
+    await db.execute(SessionDao().insertFakeData3);
     await db.execute(SessionCodeDao().createTableQuery);
+    await db.execute(SessionCodeDao().insertFakeData);
+    await db.execute(SessionCodeDao().insertFakeData2);
+    await db.execute(SessionCodeDao().insertFakeData3);
     await db.execute(BookDao().createTableQuery);
+    // await db.execute(BookDao().insertFakeData);
   }
 
   // Helper methods
@@ -115,6 +122,12 @@ class DBProvider {
     Database db = await instance.database;
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
+
+  // Future<int> specificDelete(
+  //     String table, String whereExpression, List<String> expressionArgs) async {
+  //   Database db = await instance.database;
+  //   return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  // }
 
   Future<int> sessionCodeDelete(String table, String columnSessionId,
       String columnCode, int sessionId, String code) async {

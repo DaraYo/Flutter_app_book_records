@@ -17,12 +17,6 @@ class SessionRepositoryImp implements SessionRepository {
     _sessionCodesRepository = SessionCodeRepositoryImp(this.databaseProvider);
   }
 
-  // @override
-  // Future<int> delete(Session item) async{
-  //   await databaseProvider.delete(DatabaseConstants.sessionCodeTable, DatabaseConstants.sessionCodeColSessionId, item.id);
-  //   return await databaseProvider.delete(DatabaseConstants.sessionTable, DatabaseConstants.sessionColumnId, item.id);
-  // }
-
   @override
   Future<int> delete(int sessionId) async {
     await databaseProvider.delete(DatabaseConstants.sessionCodeTable,

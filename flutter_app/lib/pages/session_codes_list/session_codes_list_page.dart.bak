@@ -82,7 +82,7 @@ class _SessionCodesListState extends State<SessionCodesListPage> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Brisanje",
+                    "Deleting",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

@@ -10,7 +10,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     checkLoggedInUser();
   }
 
-  Future<void> logout() async {
+  Future<void> logout() {
     StorageUtil.putString("token", null);
     SecureStorageUtil.deleteAll();
     emit(HomePageInitial("Dobrodošli", false));
@@ -20,9 +20,6 @@ class HomePageCubit extends Cubit<HomePageState> {
     print(StorageUtil.getString("token"));
     if (StorageUtil.getString("token") != null) {
       String nameOfUser = await SecureStorageUtil.read("loggedInUserFirstName");
-      if (nameOfUser == null) {
-        nameOfUser = '';
-      }
       emit(HomePageInitial("Dobrodošli " + nameOfUser, true));
     }
   }

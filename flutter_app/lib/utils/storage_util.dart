@@ -75,11 +75,6 @@ class StorageUtil {
         storageValues.add(value);
       }
     }
-    // if(storageValues.contains(value)){
-    //   storageValues.remove(value);
-    // }else{
-    //   storageValues.add(value);
-    // }
     return _preferences.setStringList(key, storageValues);
   }
 }
