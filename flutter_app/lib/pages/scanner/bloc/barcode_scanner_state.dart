@@ -20,22 +20,6 @@ class BarcodeScannerScanning extends BarcodeScannerState {
   List<Object> get props => [session];
 }
 
-// class BarcodeScannerScanOptionChange extends BarcodeScannerState {
-//   BarcodeScannerScanOptionChange();
-
-//   @override
-//   // TODO: implement props
-//   List<Object> get props => [];
-// }
-
-// class BarcodeScannerCodeFound extends BarcodeScannerState {
-//   BarcodeScannerCodeFound();
-
-//   @override
-//   // TODO: implement props
-//   List<Object> get props => [];
-// }
-
 class BarcodeScannerCode128Found extends BarcodeScannerState {
   //extends BarcodeScannerScanning {
   final Session session;

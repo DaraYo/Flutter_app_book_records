@@ -29,23 +29,17 @@ class _SessionsListState extends State<SessionsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.blueGrey,
-        ),
         title: Text(
           "Sesije",
           style: TextStyle(
-            color: Colors.blueGrey,
             fontFamily: FontNameDefault,
           ),
         ),
-        backgroundColor: ColorConstants.color5,
         elevation: 0,
         actions: <Widget>[
           IconButton(
             icon: Icon(
               Icons.sync,
-              // color: Colors.blueGrey,
             ),
             onPressed: () {
               _select();
@@ -74,12 +68,6 @@ class _SessionsListState extends State<SessionsListPage> {
           }
         },
       ),
-      // body: BlocProvider(
-      //   create: (context) => SessionsListCubit(
-      //     [],
-      //     SessionRepositoryImp(DBProvider.instance),
-      //   ),
-      // ),
     );
   }
 
@@ -161,7 +149,7 @@ class _SessionsListState extends State<SessionsListPage> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Deleting",
+                    "Brisanje",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

@@ -26,22 +26,22 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: BlocProvider(
-            create: (context) => HomePageCubit(),
-            child: BlocConsumer<HomePageCubit, HomePageState>(
-              listener: (context, state) {
-                print("samo osluskujem");
-              },
-              builder: (context, state) {
-                if (state is HomePageInitial) {
-                  return buildHomePage(
-                      context, state.welcomeString, state.isLoggedIn);
-                } else {
-                  return Container();
-                }
-              },
-            )));
+      backgroundColor: Colors.white,
+      body: BlocProvider(
+        create: (context) => HomePageCubit(),
+        child: BlocConsumer<HomePageCubit, HomePageState>(
+          listener: (context, state) {
+            print("samo osluskujem");
+          },
+          builder: (context, state) {
+            if (state is HomePageInitial) {
+              return buildHomePage(
+                  context, state.welcomeString, state.isLoggedIn);
+            }
+          },
+        ),
+      ),
+    );
   }
 
   Widget buildHomePage(
@@ -68,70 +68,79 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ButtonPrimary(
-                  'Skeniraj',
-                  ColorConstants.color4,
-                  250,
-                  () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BarcodeScannerPage()),
-                        )
-                      }),
+                'Skeniraj',
+                ColorConstants.color4,
+                250,
+                () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BarcodeScannerPage()),
+                  )
+                },
+              ),
               SizedBox(
                 height: 20,
               ),
               ButtonPrimary(
-                  'Sesije',
-                  ColorConstants.color4,
-                  250,
-                  () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                              create: (context) => SessionsListCubit(
-                                  SessionRepositoryImp(DBProvider.instance)),
-                              child: SessionsListPage(),
-                            ),
-                          ),
-                        ),
-                      }),
+                'Sesije',
+                ColorConstants.color4,
+                250,
+                () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => SessionsListCubit(
+                            SessionRepositoryImp(DBProvider.instance)),
+                        child: SessionsListPage(),
+                      ),
+                    ),
+                  ),
+                },
+              ),
               SizedBox(
                 height: 20,
               ),
               ButtonPrimary(
-                  'Podešavanja',
-                  ColorConstants.color4,
-                  250,
-                  () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SettingsPage(),
-                          ),
-                        ),
-                      }),
+                'Podešavanja',
+                ColorConstants.color4,
+                250,
+                () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(),
+                    ),
+                  ),
+                },
+              ),
               SizedBox(
                 height: 20,
               ),
               isLoggedInUser
-                  ? ButtonPrimary('Odjava', ColorConstants.color4, 250, () {
-                      final homeCubit = context.bloc<HomePageCubit>();
-                      homeCubit.logout();
-                    })
+                  ? ButtonPrimary(
+                      'Odjava',
+                      ColorConstants.color4,
+                      250,
+                      () {
+                        final homeCubit = context.bloc<HomePageCubit>();
+                        homeCubit.logout();
+                      },
+                    )
                   : ButtonPrimary(
                       'Prijava',
                       ColorConstants.color4,
                       250,
                       () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            ),
-                          })
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        ),
+                      },
+                    )
             ],
           ),
         )

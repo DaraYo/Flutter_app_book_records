@@ -8,7 +8,6 @@ import 'package:flutter_app/database/session/session_repository.dart';
 import 'package:flutter_app/models/book.dart';
 import 'package:flutter_app/models/scan_session.dart';
 import 'package:flutter_app/services/book_service.dart';
-import 'package:flutter_app/utils/storage_util.dart';
 
 part 'barcode_scanner_state.dart';
 
@@ -31,20 +30,6 @@ class BarcodeScannerCubit extends Cubit<BarcodeScannerState> {
   }
 
   Future<void> codeFound(String code) async {
-    // an old idea
-    // if (state is BarcodeScannerScanning && _session.addCode(code)) {
-    //   try {
-    //     int id = await _sessionRepository.insertCode(_session.id, code);
-
-    //     emit(BarcodeScannerCode128Found(_session));
-
-    //     Future.delayed(const Duration(milliseconds: 1000), () {
-    //       emit(BarcodeScannerScanning(_session));
-    //     });
-    //   } catch (ex) {}
-    // }
-
-    //_________________________________________
     if (state is BarcodeScannerScanning && _oldCode != code) {
       _oldCode = code;
       if (code.substring(0, 3) == "978" &&
@@ -61,16 +46,13 @@ class BarcodeScannerCubit extends Cubit<BarcodeScannerState> {
             var result = await _bookService.getBook(
                 accessToken: "abc", bookCode: _oldCode);
             if (result != null) {
-              print(result);
               _bookRepository.insert(result);
             } else {
-              print("Moja poruka = knjiga nije pronadjena");
               emit(BarcodeScannerMessage(
                   _session, "Knjiga sa kodom $_oldCode nije pronadjena"));
             }
           }
         } else {
-          print("Moja poruka u cubitu, nema interneta");
           emit(BarcodeScannerMessage(_session, "No internet connection"));
         }
       } else {
@@ -79,21 +61,13 @@ class BarcodeScannerCubit extends Cubit<BarcodeScannerState> {
             code.length == 11) {
           try {
             int id = await _sessionRepository.insertCode(_session.id, code);
-
             emit(BarcodeScannerCode128Found(_session));
-
             Future.delayed(const Duration(milliseconds: 1000), () {
               emit(BarcodeScannerScanning(_session));
             });
           } catch (ex) {}
         }
       }
-    }
-  }
-
-  Future<void> closeDialog() async {
-    if (state is BarcodeScannerEanCodeFound) {
-      emit(BarcodeScannerScanning(_session));
     }
   }
 
@@ -108,17 +82,6 @@ class BarcodeScannerCubit extends Cubit<BarcodeScannerState> {
 
       emit(BarcodeScannerScanning(_session));
     }
-  }
-
-  Future<void> onScanOptionChange() async {
-    bool ean13On = StorageUtil.getBool("ean13") ?? false;
-    // emit(BarcodeScannerScanOptionChange());
-    StorageUtil.putBool("ean13", !ean13On);
-    emit(BarcodeScannerScanning(_session));
-  }
-
-  Future<void> continueScanning() async {
-    emit(BarcodeScannerScanning(_session));
   }
 
   Future<bool> _checkInternetConnectivity() async {

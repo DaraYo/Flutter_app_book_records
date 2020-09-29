@@ -17,8 +17,11 @@ class HomePageCubit extends Cubit<HomePageState> {
   }
 
   Future<void> checkLoggedInUser() async {
-    print(StorageUtil.getString("token"));
-    if (StorageUtil.getString("token") != null) {
+    print("Das iz token");
+    print(StorageUtil.getString("token") != null ||
+        StorageUtil.getString("token").isNotEmpty);
+    if (StorageUtil.getString("token") != null &&
+        StorageUtil.getString("token").isNotEmpty) {
       String nameOfUser = await SecureStorageUtil.read("loggedInUserFirstName");
       if (nameOfUser == null) {
         nameOfUser = '';

@@ -21,7 +21,7 @@ class LoginPageCubit extends Cubit<LoginPageState> {
     _userService = UserService();
   }
 
-  Future<void> rememberMeChecked(bool isChecked) {
+  Future<void> rememberMeChecked(bool isChecked) async {
     _isRememberMe = isChecked;
     emit(LoginPageInitial(_isRememberMe));
   }
@@ -52,15 +52,15 @@ class LoginPageCubit extends Cubit<LoginPageState> {
       print(ex.toString());
       var responseJson = json.decode(ex.toString());
       print(responseJson["non_field_errors"][0]);
-      emit(LoginError("Losi kredencijali"));
+      emit(LoginError("Loši kredencijali"));
     }
   }
 
-  Future<void> redirectToHome(BuildContext context) {
+  redirectToHome(BuildContext context) {
     Navigator.pop(context);
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => HomePage(title: 'Bibliotecki fond')));
+            builder: (context) => HomePage(title: 'Bibliotečki fond')));
   }
 }

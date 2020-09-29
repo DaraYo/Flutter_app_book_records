@@ -15,17 +15,12 @@ class _SessionCodesListState extends State<SessionCodesListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // iconTheme: IconThemeData(
-        //   color: Colors.blueGrey,
-        // ),
         title: Text(
           "Barkodovi",
           style: TextStyle(
-            // color: Colors.blueGrey,
             fontFamily: FontNameDefault,
           ),
         ),
-        // backgroundColor: ColorConstants.color5,
         elevation: 0,
       ),
       body: BlocConsumer<SessionCodesListCubit, SessionCodesListState>(

@@ -29,17 +29,17 @@ class _SessionsListState extends State<SessionsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // iconTheme: IconThemeData(
-        //   color: Colors.blueGrey,
-        // ),
+        iconTheme: IconThemeData(
+          color: Colors.blueGrey,
+        ),
         title: Text(
           "Sesije",
           style: TextStyle(
-            // color: Colors.blueGrey,
+            color: Colors.blueGrey,
             fontFamily: FontNameDefault,
           ),
         ),
-        // backgroundColor: ColorConstants.color5,
+        backgroundColor: ColorConstants.color5,
         elevation: 0,
         actions: <Widget>[
           IconButton(

@@ -108,10 +108,8 @@ class ApiBaseHelper {
     switch (response.statusCode) {
       case 200:
         var responseJson = json.decode(response.body.toString());
-        print(responseJson);
         return responseJson;
       case 400:
-        print(response.body.toString());
         throw BadRequestException(response.body.toString());
       case 401:
         AuthDto newUser = AuthDto();

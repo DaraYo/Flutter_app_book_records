@@ -23,46 +23,50 @@ class _SettingsPageState extends State<SettingsPage> {
         enabled: false,
       ),
     );
-    contentList.addAll(_possibleFormats.map((format) => CheckboxListTile(
+    contentList.addAll(
+      _possibleFormats.map(
+        (format) => CheckboxListTile(
           value: format == BarcodeFormats.CODE_128
               ? true
               : StorageUtil.getBool("ean13") ?? false,
-//StorageUtil.getInt("selectedFormat")
           onChanged: format == BarcodeFormats.CODE_128
               ? null
               : (i) {
                   print(i);
                   StorageUtil.putBool("ean13", i);
-                  // StorageUtil.putInt("selectedFormat", format.index);
                   setState(() {});
                 },
           title: Text(format == BarcodeFormats.CODE_128
               ? "Skeniranje u sesijama"
               : "Prikaži detalje o knjizi"),
-        )));
-    contentList.addAll([
-      ListTile(
-        title: Text("Signalizacija"),
-        dense: true,
-        enabled: false,
+        ),
       ),
-      CheckboxListTile(
-        title: Text("Vibracija"),
-        value: StorageUtil.getBool("vibration") ?? false,
-        onChanged: (checked) {
-          StorageUtil.putBool("vibration", checked);
-          setState(() {});
-        },
-      ),
-      CheckboxListTile(
-        title: Text("Kratak ton"),
-        value: StorageUtil.getBool("shortBeep") ?? false,
-        onChanged: (checked) {
-          StorageUtil.putBool("shortBeep", checked);
-          setState(() {});
-        },
-      ),
-    ]);
+    );
+    contentList.addAll(
+      [
+        ListTile(
+          title: Text("Signalizacija"),
+          dense: true,
+          enabled: false,
+        ),
+        CheckboxListTile(
+          title: Text("Vibracija"),
+          value: StorageUtil.getBool("vibration") ?? false,
+          onChanged: (checked) {
+            StorageUtil.putBool("vibration", checked);
+            setState(() {});
+          },
+        ),
+        CheckboxListTile(
+          title: Text("Kratak ton"),
+          value: StorageUtil.getBool("shortBeep") ?? false,
+          onChanged: (checked) {
+            StorageUtil.putBool("shortBeep", checked);
+            setState(() {});
+          },
+        ),
+      ],
+    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Podešavanja'),

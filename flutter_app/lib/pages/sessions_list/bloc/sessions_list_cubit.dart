@@ -11,11 +11,9 @@ class SessionsListCubit extends Cubit<SessionsListState> {
 
   final SessionRepository _sessionRepository;
   SessionService _sessionService;
-  UserService _userService;
 
   SessionsListCubit(this._sessionRepository) : super(SessionsListInitial()) {
     _sessionService = SessionService();
-    _userService = UserService();
     _getSessions();
   }
 
@@ -23,7 +21,6 @@ class SessionsListCubit extends Cubit<SessionsListState> {
     if (state is SessionsListLoaded) {
       try {
         int id = await _sessionRepository.delete(sessionId);
-
         emit(SessionsListItemDeleted());
         _getSessions();
       } catch (ex) {}
@@ -62,9 +59,5 @@ class SessionsListCubit extends Cubit<SessionsListState> {
         emit(SessionsListLoaded(_sessions));
       });
     }
-  }
-
-  List<Session> getnotSentSessions() {
-    return _sessions.where((element) => element.sent == false).toList();
   }
 }
